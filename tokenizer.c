@@ -24,6 +24,7 @@ TOKEN* parseStringToTokens (char* json_string) {
     TOKEN* root = create_link_list();
     TOKEN *temp;
 
+    printf("json_string = %s\n", json_string);
     while (*curPointerIndex < strlen(json_string)) {
 
         char character = json_string[*curPointerIndex];
@@ -35,7 +36,7 @@ TOKEN* parseStringToTokens (char* json_string) {
 
         if (character == '{') {
             temp = malloc(sizeof (TOKEN));
-            PARSE_VALUE_RESULT result = parseBeginObject(curPointerIndex, temp);
+            PARSE_VALUE_RESULT result = parseBeginObject(json_string, curPointerIndex, temp);
             if (result != SUCCESS) {
                 exit(result);
             }
@@ -46,7 +47,7 @@ TOKEN* parseStringToTokens (char* json_string) {
 
         if (character == '}') {
             temp = malloc(sizeof (TOKEN));
-            PARSE_VALUE_RESULT result = parseEndObject(curPointerIndex, temp);
+            PARSE_VALUE_RESULT result = parseEndObject(json_string, curPointerIndex, temp);
             if (result != SUCCESS) {
                 exit(result);
             }
@@ -57,7 +58,7 @@ TOKEN* parseStringToTokens (char* json_string) {
 
         if (character == '[') {
             temp = malloc(sizeof (TOKEN));
-            PARSE_VALUE_RESULT result = parseBeginArray(curPointerIndex, temp);
+            PARSE_VALUE_RESULT result = parseBeginArray(json_string, curPointerIndex, temp);
             if (result != SUCCESS) {
                 exit(result);
             }
@@ -68,7 +69,7 @@ TOKEN* parseStringToTokens (char* json_string) {
 
         if (character == ']') {
             temp = malloc(sizeof (TOKEN));
-            PARSE_VALUE_RESULT result = parseEndArray(curPointerIndex, temp);
+            PARSE_VALUE_RESULT result = parseEndArray(json_string, curPointerIndex, temp);
             if (result != SUCCESS) {
                 exit(result);
             }
@@ -79,7 +80,7 @@ TOKEN* parseStringToTokens (char* json_string) {
 
         if (character == ':') {
             temp = malloc(sizeof (TOKEN));
-            PARSE_VALUE_RESULT result = parseSepColon(curPointerIndex, temp);
+            PARSE_VALUE_RESULT result = parseSepColon(json_string, curPointerIndex, temp);
             if (result != SUCCESS) {
                 exit(result);
             }
@@ -90,7 +91,7 @@ TOKEN* parseStringToTokens (char* json_string) {
 
         if (character == ',') {
             temp = malloc(sizeof (TOKEN));
-            PARSE_VALUE_RESULT result = parseSepComma(curPointerIndex, temp);
+            PARSE_VALUE_RESULT result = parseSepComma(json_string, curPointerIndex, temp);
             if (result != SUCCESS) {
                 exit(result);
             }
@@ -149,57 +150,63 @@ TOKEN* parseStringToTokens (char* json_string) {
 };
 
 
-PARSE_VALUE_RESULT parseBeginObject(int* curPointerIndex, TOKEN* token) {
+PARSE_VALUE_RESULT parseBeginObject(const char* json_string, int* curPointerIndex, TOKEN* token) {
     token->start_index = *curPointerIndex;
     token->end_index = *curPointerIndex;
     token->token_type = BEGIN_OBJECT;
     token->next = NULL;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
-PARSE_VALUE_RESULT parseEndObject(int* curPointerIndex, TOKEN* token) {
+PARSE_VALUE_RESULT parseEndObject(const char* json_string, int* curPointerIndex, TOKEN* token) {
     token->start_index = *curPointerIndex;
     token->end_index = *curPointerIndex;
     token->token_type = END_OBJECT;
     token->next = NULL;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
-PARSE_VALUE_RESULT parseBeginArray(int* curPointerIndex, TOKEN* token) {
+PARSE_VALUE_RESULT parseBeginArray(const char* json_string, int* curPointerIndex, TOKEN* token) {
     token->start_index = *curPointerIndex;
     token->end_index = *curPointerIndex;
     token->token_type = BEGIN_ARRAY;
     token->next = NULL;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
-PARSE_VALUE_RESULT parseEndArray(int* curPointerIndex, TOKEN* token) {
+PARSE_VALUE_RESULT parseEndArray(const char* json_string, int* curPointerIndex, TOKEN* token) {
     token->start_index = *curPointerIndex;
     token->end_index = *curPointerIndex;
     token->token_type = END_ARRAY;
     token->next = NULL;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
-PARSE_VALUE_RESULT parseSepComma(int* curPointerIndex, TOKEN* token) {
+PARSE_VALUE_RESULT parseSepComma(const char* json_string, int* curPointerIndex, TOKEN* token) {
     token->start_index = *curPointerIndex;
     token->end_index = *curPointerIndex;
     token->token_type = SEP_COMMA;
     token->next = NULL;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
-PARSE_VALUE_RESULT parseSepColon(int* curPointerIndex, TOKEN* token) {
+PARSE_VALUE_RESULT parseSepColon(const char* json_string, int* curPointerIndex, TOKEN* token) {
     token->start_index = *curPointerIndex;
     token->end_index = *curPointerIndex;
     token->token_type = SEP_COLON;
     token->next = NULL;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
@@ -213,7 +220,7 @@ PARSE_VALUE_RESULT parseBoolValue(const char* json_string, int* curPointerIndex,
     char* val;
     if (character == 't') { val = true_value; }
     else { val = false_value; }
-    for (int index = 0; index < strlen(val); index ++) {
+    for (int index = 0; index < strlen(val) - 1; index ++) {
         if (val[index] != json_string[*curPointerIndex]) {
             printf("NOT_VALID_BOOL_VALUE");
             return NOT_VALID_BOOL_VALUE;
@@ -222,6 +229,7 @@ PARSE_VALUE_RESULT parseBoolValue(const char* json_string, int* curPointerIndex,
     }
     token->end_index = *curPointerIndex;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
@@ -237,6 +245,7 @@ PARSE_VALUE_RESULT parseStringValue(char* json_string, int* curPointerIndex, TOK
     } while (json_string[*curPointerIndex] != '"');
     token->end_index = *curPointerIndex;
     *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
@@ -244,7 +253,7 @@ PARSE_VALUE_RESULT parseNullValue(const char* json_string, int* curPointerIndex,
     token->token_type = Null;
     token->start_index = *curPointerIndex;
     char* null_val = "null";
-    for (int index = 0; index < strlen(null_val); index ++) {
+    for (int index = 0; index < strlen(null_val) - 1; index ++) {
         if (null_val[index] != json_string[*curPointerIndex]) {
             printf("NOT_VALID_NULL_VALUE");
             return NOT_VALID_NULL_VALUE;
@@ -252,6 +261,8 @@ PARSE_VALUE_RESULT parseNullValue(const char* json_string, int* curPointerIndex,
         *curPointerIndex = *curPointerIndex + 1;
     }
     token->end_index = *curPointerIndex;
+    *curPointerIndex = *curPointerIndex + 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 
@@ -276,6 +287,7 @@ PARSE_VALUE_RESULT parseNumberValue(char* json_string, int* curPointerIndex, TOK
             || json_string[*curPointerIndex] == '9'
             || json_string[*curPointerIndex] == '.');
     token->end_index = *curPointerIndex - 1;
+    get_token_value(json_string, token);
     return SUCCESS;
 }
 

@@ -30,6 +30,7 @@ typedef struct _token{
     int start_index;
     int end_index;
     struct _token* next;
+    char* value;
 } TOKEN;
 
 TOKEN* create_link_list();
@@ -43,6 +44,8 @@ OPERATION_RESULT free_token_list(TOKEN* root);
 void to_string(TOKEN* root);
 
 char* get_token_type_name(TOKEN_TYPE);
+
+void get_token_value (const char* json_string, TOKEN* token);
 
 
 #endif //TINY_JSON_TOKEN_LINK_LIST_H

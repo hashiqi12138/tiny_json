@@ -3,6 +3,7 @@
 //
 
 #include <stdio.h>
+#include <string.h>
 #include "token_link_list.h"
 
 TOKEN* create_link_list() {
@@ -44,6 +45,8 @@ OPERATION_RESULT pop_from_list(TOKEN* root) {
         temp = temp->next;
     }
     parent->next = NULL;
+    free(temp->value);
+    temp->value = NULL;
     free(temp);
     result.status = 1;
     result.msg = "success";
@@ -61,11 +64,12 @@ void to_string(TOKEN* root) {
     TOKEN * temp;
     temp = root->next;
     while (temp != NULL) {
-        printf("token type is [ %s ], start index [ %d ], end index [ %d ] \n",
-               get_token_type_name(temp->token_type), temp->start_index, temp->end_index);
+        printf("token type is [ %s ], start index [ %d ], end index [ %d ], value is [ %s ]\n",
+               get_token_type_name(temp->token_type), temp->start_index, temp->end_index, temp->value);
         temp = temp->next;
     }
 };
+
 
 char* get_token_type_name(TOKEN_TYPE type) {
     switch (type) {
@@ -91,6 +95,17 @@ char* get_token_type_name(TOKEN_TYPE type) {
             return ":";
         default:
             return "unknown";
+    }
+}
+
+void get_token_value (const char* json_string, TOKEN* token) {
+    token->value = NULL;
+    int index = 0;
+    int length = token->end_index - token->start_index + 1;
+    token->value = malloc(length);
+    while (index < length) {
+        token->value[index] = json_string[index + token->start_index];
+        index ++;
     }
 }
 

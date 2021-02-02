@@ -27,10 +27,24 @@ void test_token_link_list() {
 }
 
 void test_tokenizer() {
-    printf("test tokenizer >>> \n");
-    char* json = "{\"a\":1,\"b\":\"string\",\"c\": [{\"c\" : false}]}";
-    TOKEN * token = parseStringToTokens(json);
-    to_string(token);
-    free_token_list(token);
+//    printf("test tokenizer >>> \n");
+//    char* json = "{\"a\":1,\"b\":\"string\",\"c\": [{\"c\" : false, \"d\": null}]}";
+//    TOKEN * token = parseStringToTokens(json);
+//    to_string(token);
+//    free_token_list(token);
+//    getchar();
+//
+//    printf("test tokenizer simple json >>> \n");
+//    char* json_simple = "{  }";
+//    TOKEN * token_simple = parseStringToTokens(json_simple);
+//    to_string(token_simple);
+//    free_token_list(token_simple);
+//    getchar();
+
+    printf("test tokenizer complex json >>> \n");
+    char* json_complex = "{\"errno\":0,\"tk\":\"258cdafa18b96daa17ec7546665354656346654\",\"isFavorite\":false}";
+    TOKEN * token_complex = parseStringToTokens("{\"errno\":0,\"tk44444444456415645465465455\":\"258cdafa1fdaf8b96daa1\",\"isFavorite\":false}");
+    to_string(token_complex);
+    free_token_list(token_complex);
     getchar();
 }

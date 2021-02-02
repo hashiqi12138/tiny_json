@@ -26,17 +26,17 @@ typedef enum{
 
 TOKEN* parseStringToTokens(char* json_string);
 
-PARSE_VALUE_RESULT parseBeginObject(int* curPointerIndex, TOKEN* token);
+PARSE_VALUE_RESULT parseBeginObject(const char* json_string, int* curPointerIndex, TOKEN* token);
 
-PARSE_VALUE_RESULT parseEndObject(int* curPointerIndex, TOKEN* token);
+PARSE_VALUE_RESULT parseEndObject(const char* json_string, int* curPointerIndex, TOKEN* token);
 
-PARSE_VALUE_RESULT parseBeginArray(int* curPointerIndex, TOKEN* token);
+PARSE_VALUE_RESULT parseBeginArray(const char* json_string, int* curPointerIndex, TOKEN* token);
 
-PARSE_VALUE_RESULT parseEndArray(int* curPointerIndex, TOKEN* token);
+PARSE_VALUE_RESULT parseEndArray(const char* json_string, int* curPointerIndex, TOKEN* token);
 
-PARSE_VALUE_RESULT parseSepComma(int* curPointerIndex, TOKEN* token);
+PARSE_VALUE_RESULT parseSepComma(const char* json_string, int* curPointerIndex, TOKEN* token);
 
-PARSE_VALUE_RESULT parseSepColon(int* curPointerIndex, TOKEN* token);
+PARSE_VALUE_RESULT parseSepColon(const char* json_string, int* curPointerIndex, TOKEN* token);
 
 PARSE_VALUE_RESULT parseBoolValue(const char* json_string, int* curPointerIndex, TOKEN* token);
 
